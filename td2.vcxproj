@@ -47,6 +47,7 @@
     <ClCompile Include="bibliotheque_cours\bibliotheque_cours.cpp" />
     <ClCompile Include="bibliotheque_cours\verification_allocation.cpp" />
     <ClCompile Include="td2.cpp" />
+    <ClCompile Include="testgit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bibliotheque_cours.hpp" />
