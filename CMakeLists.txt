@@ -25,7 +25,7 @@ file(GLOB ALL_FILES
 )
 
 configurer_options_compilation_globales()  # Doit être avant le "add_executable".
-add_executable(${PROJECT_NAME} ${ALL_FILES})
+add_executable(${PROJECT_NAME} ${ALL_FILES} "include/test2haha.cpp")
 
 ajouter_target_couverture(${PROJECT_NAME})  # Doit être après le "add_executable" et lui passer le même nom. Ajoute un cible ${PROJECT_NAME}_couverture pour obtenir la couverture de code avec gcov (si on trouve gcov).
 
