@@ -93,7 +93,7 @@ Acteur* trouverActeur(const ListeFilms& liste, const string& nom) {
 			}
 		}
 	}
-	return nullptr
+	return nullptr;
 }
 
 //TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau (cherché par nom en utilisant la fonction ci-dessus).
