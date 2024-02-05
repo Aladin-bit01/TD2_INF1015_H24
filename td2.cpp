@@ -65,7 +65,7 @@ void ajouterFilm(ListeFilms& listeFilms, Film* film) {
 	Film** newListFilm;
 	if (listeFilms.capacite == listeFilms.nElements) {
 		listeFilms.capacite = max(1, listeFilms.capacite * 2);
-		newListFilm = new Film*[listeFilms.capacite];
+		newListFilm = new Film * [listeFilms.capacite];
 	}
 	for (int i : range(listeFilms.nElements)) {
 		newListFilm[i] = listeFilms.elements[i];
@@ -81,13 +81,13 @@ void ajouterFilm(ListeFilms& listeFilms, Film* film) {
 void enleverFilm(ListeFilms& listeFilm, Film* film) {
 	for (int i : range(listeFilm.nElements)) {
 		if (listeFilm.elements[i] == film) {
-			for (int j : range(i, listeFilm.nElements- 1)) {
+			for (int j : range(i, listeFilm.nElements - 1)) {
 				listeFilm.elements[j] = listeFilm.elements[j + 1];
 			}
 			break;
 		}
 	}
-	listeFilm.nElements -= 1; 
+	listeFilm.nElements -= 1;
 }
 
 //TODO: Une fonction pour trouver un Acteur par son nom dans une ListeFilms, 
@@ -97,17 +97,19 @@ Acteur* trouverActeur(ListeFilms& listeFilm, string nomActeur) {
 		for (int j : range(listeFilm.elements[i]->acteurs.nElements)) {
 			if (listeFilm.elements[i]->acteurs.elements[j]->nom == nomActeur) {
 				return listeFilm.elements[i]->acteurs.elements[j];
-			}	
+			}
 		}
 	}
 	return nullptr;
 }
 
 
-
 //TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  
 // La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau 
 // (cherché par nom en utilisant la fonction ci-dessus).
+
+
+
 
 
 Acteur* lireActeur(istream& fichier)
