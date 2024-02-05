@@ -57,20 +57,68 @@ string lireString(istream& fichier)
 
 #pragma endregion//}
 
-//TODO: Une fonction pour ajouter un Film à une ListeFilms, le film existant déjà; on veut uniquement ajouter le pointeur vers le film existant.  Cette fonction doit doubler la taille du tableau alloué, avec au minimum un élément, dans le cas où la capacité est insuffisante pour ajouter l'élément.  Il faut alors allouer un nouveau tableau plus grand, copier ce qu'il y avait dans l'ancien, et éliminer l'ancien trop petit.  Cette fonction ne doit copier aucun Film ni Acteur, elle doit copier uniquement des pointeurs.
+//TODO: Une fonction pour ajouter un Film à une ListeFilms, le film existant déjà; on veut uniquement ajouter le pointeur vers le film existant.  Cette fonction doit doubler la taille du tableau alloué, 
+// avec au minimum un élément, dans le cas où la capacité est insuffisante pour ajouter l'élément.  
+// Il faut alors allouer un nouveau tableau plus grand, copier ce qu'il y avait dans l'ancien, et éliminer l'ancien trop petit.  
+// Cette fonction ne doit copier aucun Film ni Acteur, elle doit copier uniquement des pointeurs.
+void ajouterFilm(ListeFilms& listeFilms, Film* film) {
+	Film** newListFilm;
+	if (listeFilms.capacite == listeFilms.nElements) {
+		listeFilms.capacite = max(1, listeFilms.capacite * 2);
+		newListFilm = new Film*[listeFilms.capacite];
+	}
+	for (int i : range(listeFilms.nElements)) {
+		newListFilm[i] = listeFilms.elements[i];
+	}
+	delete[] listeFilms.elements;
+	newListFilm[listeFilms.nElements + 1] = film;
+	listeFilms.elements = newListFilm;
+}
 
-//TODO: Une fonction pour enlever un Film d'une ListeFilms (enlever le pointeur) sans effacer le film; la fonction prenant en paramètre un pointeur vers le film à enlever.  L'ordre des films dans la liste n'a pas à être conservé.
 
-//TODO: Une fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
+//TODO: Une fonction pour enlever un Film d'une ListeFilms (enlever le pointeur) sans effacer le film; 
+// la fonction prenant en paramètre un pointeur vers le film à enlever.  L'ordre des films dans la liste n'a pas à être conservé.
+void enleverFilm(ListeFilms& listeFilm, Film* film) {
+	for (int i : range(listeFilm.nElements)) {
+		if (listeFilm.elements[i] == film) {
+			for (int j : range(i, listeFilm.nElements- 1)) {
+				listeFilm.elements[j] = listeFilm.elements[j + 1];
+			}
+			break;
+		}
+	}
+	listeFilm.nElements -= 1; 
+}
 
-//TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau (cherché par nom en utilisant la fonction ci-dessus).
+//TODO: Une fonction pour trouver un Acteur par son nom dans une ListeFilms, 
+// qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
+Acteur* trouverActeur(ListeFilms& listeFilm, string nomActeur) {
+	for (int i : range(listeFilm.nElements)) {
+		for (int j : range(listeFilm.elements[i]->acteurs.nElements)) {
+			if (listeFilm.elements[i]->acteurs.elements[j]->nom == nomActeur) {
+				return listeFilm.elements[i]->acteurs.elements[j];
+			}	
+		}
+	}
+	return nullptr;
+}
+
+
+
+//TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  
+// La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau 
+// (cherché par nom en utilisant la fonction ci-dessus).
+
+
 Acteur* lireActeur(istream& fichier)
 {
 	Acteur acteur = {};
 	acteur.nom            = lireString(fichier);
 	acteur.anneeNaissance = int(lireUintTailleVariable (fichier));
 	acteur.sexe           = char(lireUintTailleVariable(fichier));
-	return {}; //TODO: Retourner un pointeur soit vers un acteur existant ou un nouvel acteur ayant les bonnes informations, selon si l'acteur existait déjà.  Pour fins de débogage, affichez les noms des acteurs crées; vous ne devriez pas voir le même nom d'acteur affiché deux fois pour la création.
+	return {}; //TODO: Retourner un pointeur soit vers un acteur existant ou un nouvel acteur ayant les bonnes 
+	//informations, selon si l'acteur existait déjà.  Pour fins de débogage, affichez les noms des acteurs crées; vous ne //
+	// devriez pas voir le même nom d'acteur affiché deux fois pour la création.
 }
 
 Film* lireFilm(istream& fichier)
@@ -139,15 +187,14 @@ void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomA
 int main()
 {
 	bibliotheque_cours::activerCouleursAnsi();  // Permet sous Windows les "ANSI escape code" pour changer de couleurs https://en.wikipedia.org/wiki/ANSI_escape_code ; les consoles Linux/Mac les supportent normalement par défaut.
-
-	
-
+\
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
 	//TODO: Chaque TODO dans cette fonction devrait se faire en 1 ou 2 lignes, en appelant les fonctions écrites.
 
 	//TODO: La ligne suivante devrait lire le fichier binaire en allouant la mémoire nécessaire.  Devrait afficher les noms de 20 acteurs sans doublons (par l'affichage pour fins de débogage dans votre fonction lireActeur).
 	ListeFilms listeFilms = creerListe("films.bin");
+
 	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	//TODO: Afficher le premier film de la liste.  Devrait être Alien.
