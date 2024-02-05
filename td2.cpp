@@ -58,6 +58,7 @@ string lireString(istream& fichier)
 #pragma endregion//}
 
 //TODO: Une fonction pour ajouter un Film à une ListeFilms, le film existant déjà; on veut uniquement ajouter le pointeur vers le film existant.  Cette fonction doit doubler la taille du tableau alloué, avec au minimum un élément, dans le cas où la capacité est insuffisante pour ajouter l'élément.  Il faut alors allouer un nouveau tableau plus grand, copier ce qu'il y avait dans l'ancien, et éliminer l'ancien trop petit.  Cette fonction ne doit copier aucun Film ni Acteur, elle doit copier uniquement des pointeurs.
+//HH
 void ajouterFilm(ListeFilms& liste, Film* film) {
 	if (liste.nElements == liste.capacite) {
 		liste.capacite = max(1, liste.capacite * 2);
@@ -72,13 +73,27 @@ void ajouterFilm(ListeFilms& liste, Film* film) {
 }
 
 //TODO: Une fonction pour enlever un Film d'une ListeFilms (enlever le pointeur) sans effacer le film; la fonction prenant en paramètre un pointeur vers le film à enlever.  L'ordre des films dans la liste n'a pas à être conservé.
-void enleverFilm() {
-
+//HH
+void enleverFilm(ListeFilms& liste, Film* film) {
+	for (int i = 0; i < liste.nElements; i++) {
+		if (liste.elements[i] == film) {
+			liste.elements[i] = liste.elements[--liste.nElements];
+			return;
+		}
+	}
 }
 
 //TODO: Une fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
-Acteur* trouverActeur() {
-
+//HH
+Acteur* trouverActeur(const ListeFilms& liste, const string& nom) {
+	for (auto&& film : span(liste.elements, liste.nElements)) {
+		for (int i = 0; i < film->acteurs.nElements; i++) {
+			if (film->acteurs.elements[i]->nom == nom) {
+				return film->acteurs.elements[i];
+			}
+		}
+	}
+	return nullptr
 }
 
 //TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau (cherché par nom en utilisant la fonction ci-dessus).
