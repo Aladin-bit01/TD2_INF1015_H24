@@ -213,15 +213,17 @@ void afficherFilm(const Film& film) {
 void afficherListeFilms(const ListeFilms& listeFilms)
 {
 	//TODO: Utiliser des caractères Unicode pour définir la ligne de séparation (différente des autres lignes de séparations dans ce progamme).
-	static const string ligneDeSeparation = {};
-	cout << ligneDeSeparation;
+	static const string ligneDeSeparation = {}; //A FAIRE
+	cout << ligneDeSeparation << endl;
+
 	//TODO: Changer le for pour utiliser un span.
-	for (int i = 0; i < listeFilms.nElements; i++) {
+	span<Film*> filmsSpan(listeFilms.elements, listeFilms.nElements);
+	for (Film* film : filmsSpan) {
 		//TODO: Afficher le film.
-		cout << ligneDeSeparation;
+		afficherFilm(*film);
+		cout << ligneDeSeparation << endl;
 	}
 }
-
 
 void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
 {
@@ -250,21 +252,32 @@ int main()
 	
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	//TODO: Afficher le premier film de la liste.  Devrait être Alien.
-	
+	afficherFilm(*myList.elements[0]);
+
 	cout << ligneDeSeparation << "Les films sont:" << endl;
 	//TODO: Afficher la liste des films.  Il devrait y en avoir 7.
+	afficherListeFilms(myList);
 	
 	//TODO: Modifier l'année de naissance de Benedict Cumberbatch pour être 1976 (elle était 0 dans les données lues du fichier).  Vous ne pouvez pas supposer l'ordre des films et des acteurs dans les listes, il faut y aller par son nom.
-	
+	Acteur* cumberbatch = trouverActeur(myList, "Benedict Cumberbatch");
+	if (cumberbatch != nullptr) cumberbatch->anneeNaissance = 1976;
+
 	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
 	//TODO: Afficher la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
-	
+	afficherFilmographieActeur(myList, "Benedict Cumberbatch");
+
 	//TODO: Détruire et enlever le premier film de la liste (Alien).  Ceci devrait "automatiquement" (par ce que font vos fonctions) détruire les acteurs Tom Skerritt et John Hurt, mais pas Sigourney Weaver puisqu'elle joue aussi dans Avatar.
-	
+	enleverFilm(myList, myList.elements[0]);
+	detruireFilms(myList, myList.elements[0]);
+
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	//TODO: Afficher la liste des films.
+	afficherListeFilms(myList);
 	
 	//TODO: Faire les appels qui manquent pour avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 	
 	//TODO: Détruire tout avant de terminer le programme.  La bibliothèque de verification_allocation devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
+	detruireListeFilms(myList);
+
+	return 0;
 }
