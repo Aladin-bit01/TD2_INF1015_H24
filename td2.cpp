@@ -180,7 +180,18 @@ void detruireFilms(ListeActeurs& listActeurs ,ListeFilms& listFilms, Film* filmA
 	delete filmADetruire;
 
 }
+
 //TODO: Une fonction pour détruire une ListeFilms et tous les films qu'elle contient.
+void detruireListeFilms(ListeFilms& liste) {
+	for (int i : range(liste.nElements)) {
+		detruireFilms(*(liste.elements[i]));
+	}
+	delete[] liste.elements;
+
+	liste.elements = nullptr;
+	liste.capacite = 0;
+	liste.nElements = 0;
+}
 
 void afficherActeur(const Acteur& acteur)
 {
@@ -188,6 +199,16 @@ void afficherActeur(const Acteur& acteur)
 }
 
 //TODO: Une fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
+void afficherFilm(const Film& film) {
+	cout << "Titre: " << film.titre << endl;
+	cout << "Réalisateur " << film.realisateur << endl;
+	cout << "Année de sortie: " << film.anneeSortie << endl;
+	cout << "Recette: " << film.recette << "millions $" << endl;
+	cout << "Acteurs: " << endl;
+	for (int i : range(film.acteurs.nElements)) {
+		afficherActeur(*(film.acteurs.elements[i]));
+	}
+}
 
 void afficherListeFilms(const ListeFilms& listeFilms)
 {
