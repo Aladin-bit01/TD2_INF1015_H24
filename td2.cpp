@@ -115,31 +115,38 @@ Acteur* lireActeur(istream& fichier)
 	acteur->nom            = lireString(fichier);
 	acteur->anneeNaissance = int(lireUintTailleVariable (fichier));
 	acteur->sexe           = char(lireUintTailleVariable(fichier));
-	acteur->joueDans;
+	acteur->joueDans.capacite = 0;
+	acteur->joueDans.nElements = 0;
+	acteur->joueDans.elements = nullptr;
 	//TODO: Retourner un pointeur soit vers un acteur existant ou un nouvel acteur ayant les bonnes 
 	//informations, selon si l'acteur existait déjà.  Pour fins de débogage, affichez les noms des acteurs crées; vous ne //
 	// devriez pas voir le même nom d'acteur affiché deux fois pour la création.
 	return acteur ;
 }
 
-Film* lireFilm(istream& fichier)
-{
+Film* lireFilm(istream& fichier) {
 	Film* film = new Film;
 	film->titre = lireString(fichier);
 	film->realisateur = lireString(fichier);
-	film->anneeSortie = int(lireUintTailleVariable(fichier));
-	film->recette     = int(lireUintTailleVariable(fichier));
-	film->acteurs.nElements = int(lireUintTailleVariable(fichier)); //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
-	
-	for (int i : range(film->acteurs.nElements)) {
+	film->anneeSortie = lireUintTailleVariable(fichier);
+	film->recette = lireUintTailleVariable(fichier);
+	film->acteurs.nElements = lireUintTailleVariable(fichier);
+	film->acteurs.elements = new Acteur * [film->acteurs.nElements];
+
+	for (int i = 0; i < film->acteurs.nElements; ++i) {
 		Acteur* acteur = lireActeur(fichier);
-		//TODO: Placer l'acteur au bon endroit dans les acteurs du film.
 		film->acteurs.elements[i] = acteur;
-		//TODO: Ajouter le film à la liste des films dans lesquels l'acteur joue.
-		acteur->joueDans.elements[i] = film;
+		// Add the film to the list of films in which the actor plays
+		acteur->joueDans.elements = new Film * [acteur->joueDans.nElements + 1];
+		for (int j = 0; j < acteur->joueDans.nElements; ++j) {
+			acteur->joueDans.elements[j] = acteur->joueDans.elements[j];
+		}
+		acteur->joueDans.elements[acteur->joueDans.nElements] = film;
+		acteur->joueDans.nElements++;
 	}
-	return  film; //TODO: Retourner le pointeur vers le nouveau film.
+	return film;
 }
+
 
 ListeFilms creerListe(string nomFichier){
 	ifstream fichier(nomFichier, ios::binary);
@@ -182,9 +189,9 @@ void detruireFilms(ListeActeurs& listActeurs ,ListeFilms& listFilms, Film* filmA
 }
 
 //TODO: Une fonction pour détruire une ListeFilms et tous les films qu'elle contient.
-void detruireListeFilms(ListeFilms& liste) {
+void detruireListeFilms(ListeActeurs& listActeurs, ListeFilms& liste) {
 	for (int i : range(liste.nElements)) {
-		detruireFilms(*(liste.elements[i]));
+		detruireFilms(listActeurs , liste, (liste.elements[i]));
 	}
 	delete[] liste.elements;
 
@@ -268,7 +275,7 @@ int main()
 
 	//TODO: Détruire et enlever le premier film de la liste (Alien).  Ceci devrait "automatiquement" (par ce que font vos fonctions) détruire les acteurs Tom Skerritt et John Hurt, mais pas Sigourney Weaver puisqu'elle joue aussi dans Avatar.
 	enleverFilm(myList, myList.elements[0]);
-	detruireFilms(myList, myList.elements[0]);
+	//detruireFilms(myList);
 
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	//TODO: Afficher la liste des films.
@@ -277,7 +284,7 @@ int main()
 	//TODO: Faire les appels qui manquent pour avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 	
 	//TODO: Détruire tout avant de terminer le programme.  La bibliothèque de verification_allocation devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
-	detruireListeFilms(myList);
+	//detruireListeFilms(myList);
 
 	return 0;
 }
